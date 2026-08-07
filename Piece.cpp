@@ -10,33 +10,23 @@ bool isEnemyPiece(Piece movingPiece, Piece targetPiece){
     return (isWhitePiece(movingPiece) && isBlackPiece(targetPiece)) || (isBlackPiece(movingPiece) && isWhitePiece(targetPiece));
 }
 
-std::vector<Move> generateJumpingMoves(const Board &board, int squareIndex,const int directions[], int count){
-    std::vector<Move> moves;
-    Piece piece =board.getPiece(squareIndex);
-    for(int i=0;i<count;i++){
-        int targetSquare = squareIndex + directions[i];
-        if(!isValid(targetSquare)){
-            continue;
-        }
-        Piece targetPiece = board.getPiece(targetSquare);
-        if(targetPiece==EMPTY || isEnemyPiece(piece,targetPiece)){
-            moves.emplace_back(squareIndex,targetSquare);
-        }
 
-    }
-return moves;
-}
 std::vector<Move> generateSlidingMoves(const Board &board, int squareIndex, const int directions[], int count){
    std::vector<Move> moves;
    Piece piece= board.getPiece(squareIndex);
    for(int i=0;i<count;i++){
      int currentSquare=squareIndex;
      while(true){
+        int previousSquare=currentSquare;
         currentSquare+=directions[i];
         if(!isValid(currentSquare)){
             break;
         }
-        if((directions[i]==1 && getColumn(currentSquare)==0) || (directions[i]==-1 && getColumn(currentSquare)==7) || (directions[i]==9 && getColumn(currentSquare)==0) || (directions[i]==-9 && getColumn(currentSquare)==7) || (directions[i]==7 && getColumn(currentSquare)==7) || (directions[i]==-7 && getColumn(currentSquare)==0)){
+        int previousCol=getColumn(previousSquare);
+        int currentCol=getColumn(currentSquare);
+        int previousRow=getRow(previousSquare);
+        int currentRow=getRow(currentSquare);
+        if(abs(previousCol-currentCol)>1 || abs(previousRow-currentRow)>1){
             break;
         }
         Piece currentPiece = board.getPiece(currentSquare);
@@ -46,9 +36,6 @@ std::vector<Move> generateSlidingMoves(const Board &board, int squareIndex, cons
         }
         if(isEnemyPiece(piece,currentPiece)){
             moves.emplace_back(squareIndex,currentSquare);
-            break;
-        }
-        if(!isEnemyPiece(piece,currentPiece)){
             break;
         }
      }    

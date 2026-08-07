@@ -1,6 +1,13 @@
 #include <iostream>
 #include "board.h"
-
+#include "Pawn.h"
+#include "Knight.h"
+#include "King.h"
+#include "Queen.h"
+#include "Rook.h"
+#include "Bishop.h"
+#include "square.h"
+#include "Piece.h"
 Board::Board() {
     initialize();
 }
@@ -24,6 +31,7 @@ char pieceToChar(Piece piece)
     }
 }
 void Board::initialize() {
+WhiteToMove = true;
 int i;
 for ( i=0;i<64;i++)
 {
@@ -66,12 +74,114 @@ void Board::printBoard() const {
     }
 }
 void Board::makeMove(const Move& move){
+    
+    Piece piece=getPiece(move.from);
+    if (piece == WKING) {
+    whiteKingsideCastle = false;
+    whiteQueensideCastle = false;
+    }
+
+    if (piece == BKING) {
+        blackKingsideCastle = false;
+        blackQueensideCastle = false;
+    }
+    if(piece==BROOK && move.from== 7){
+        blackKingsideCastle=false;
+    }
+    if(piece==BROOK && move.from== 0 ){
+        blackQueensideCastle=false;
+    }
+    if(piece==WROOK && move.from== 63){
+        whiteKingsideCastle=false;
+    }
+    if(piece == WROOK && move.from == 56){
+    whiteQueensideCastle = false;
+    }
+    if(move.to==0 && getPiece(move.to)==BROOK){
+        blackQueensideCastle=false;
+    }
+    if(move.to==56 && getPiece(move.to)==WROOK){
+        whiteQueensideCastle=false;
+    }
+     if(move.to==63 && getPiece(move.to)==WROOK){
+        whiteKingsideCastle=false;
+    }
+    if(move.to==7 && getPiece(move.to)==BROOK){
+        blackKingsideCastle=false;
+    }
     squares[move.to] = squares[move.from];
     squares[move.from] = EMPTY;
+    WhiteToMove = !WhiteToMove;
+
+
+
 }
 Piece Board::getPiece(int index) const{
     if(index < 0 || index >= 64) {
         return EMPTY; 
     }
     return squares[index];
+}
+bool Board::canWhiteCastleKingside() const{
+    return whiteKingsideCastle;
+}
+bool Board::canWhiteCastleQueenside() const{
+        return whiteQueensideCastle;
+
+    }
+bool Board::canBlackCastleKingside() const{
+         return blackKingsideCastle;
+    }
+bool  Board::canBlackCastleQueenside() const{
+          return blackQueensideCastle;
+    }
+int Board ::getEnPassantSquare() const{
+   return enPassantSquare;
+}    
+std::vector<Move> Board::generateAllMoves(){
+    std::vector<Move> allMoves;
+    for(int i=0;i<64;i++){
+        Piece piece = getPiece(i);
+        if(piece==EMPTY){
+            continue;
+        }
+        if(WhiteToMove && isBlackPiece(piece)){
+            continue;
+        }
+        if(!WhiteToMove && isWhitePiece(piece)) {
+            continue;
+        }
+        std::vector<Move> pieceMoves;
+        switch(piece){
+            case WPAWN:
+            case BPAWN:
+                pieceMoves = generatePawnMoves(*this,i);
+                break;
+            case BBISHOP:
+            case WBISHOP:
+                 pieceMoves = generateBishopMoves(*this,i);
+                 break;
+            case WROOK:
+            case BROOK: 
+                 pieceMoves = generateRookMoves(*this,i);
+                 break;
+            case WQUEEN:
+            case BQUEEN: 
+                 pieceMoves = generateQueenMoves(*this,i); 
+                 break;
+            case WKING:
+            case BKING: 
+                 pieceMoves = generateKingMoves(*this,i);   
+                 break;
+            case WKNIGHT:
+            case BKNIGHT: 
+                 pieceMoves = generateKnightMoves(*this,i);              
+                 break;
+  
+                          
+
+        }
+        allMoves.insert(allMoves.end(),pieceMoves.begin(),pieceMoves.end());
+    }
+    return allMoves;
 }

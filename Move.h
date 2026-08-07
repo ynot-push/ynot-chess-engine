@@ -1,10 +1,15 @@
 #pragma once
-
+#include "Piece.h"
 struct Move {
     int from;
     int to;
-    Move(int fromSquare, int toSquare)
-        : from(fromSquare), to(toSquare)
+    
+    Piece promotionPiece=EMPTY;
+    Move(int fromSquare, int toSquare,Piece promotion=EMPTY)
+        : from(fromSquare), to(toSquare), promotionPiece(promotion)
     {
+
+
     }
+
 };

@@ -9,6 +9,10 @@
 std::vector<Move> generateRookMoves(const Board &board, int squareIndex) {
 
  std::vector<Move> moves;
+ Piece piece= board.getPiece(squareIndex);
+    if(piece!=WROOK && piece!=BROOK){
+        return {};
+    }
  const int directions[] = {1, -1, 8, -8};
 
 return generateSlidingMoves(board, squareIndex, directions, 4);
