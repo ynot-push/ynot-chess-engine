@@ -5,7 +5,7 @@
 #include "Move.h"
 
 #include "square.h"
-
+#include "Piece.h"
 std::vector<Move> generateQueenMoves(const Board &board, int squareIndex) {
     std::vector<Move> moves;
     Piece piece= board.getPiece(squareIndex);

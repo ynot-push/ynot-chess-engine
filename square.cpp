@@ -28,14 +28,14 @@ int notationToIndex(const std::string& notation){
     return notation;
     }
 
-int getRow(int& index){
-  return index/8;
+int getRow(int index){
+    return index / 8;
 }
 
-int getColumn(int& index){
+int getColumn(int index){
     return index % 8;
 }
 
-bool isValid(int& index){
-    return index >=0 && index<=63;
-}    
+bool isValid(int index){
+    return index >= 0 && index <= 63;
+}

@@ -5,6 +5,7 @@
 #include "Move.h"
 
 #include "square.h"
+#include "Piece.h"
 
 std::vector<Move> generatePawnMoves(const Board &board, int squareIndex) {
     std::vector<Move> moves;

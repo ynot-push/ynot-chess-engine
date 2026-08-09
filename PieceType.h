@@ -1,0 +1,7 @@
+#pragma once
+
+enum Piece {
+    WPAWN, WKNIGHT, WBISHOP, WROOK, WQUEEN, WKING,
+    BPAWN, BKNIGHT, BBISHOP, BROOK, BQUEEN, BKING,
+    EMPTY
+};
