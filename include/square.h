@@ -9,6 +9,3 @@ int getRow(int index);
 
 int getColumn(int index);
 
-bool isValid(int index);
-bool iswhite(int index);
-bool isblack(int index);
