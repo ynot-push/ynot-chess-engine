@@ -34,66 +34,109 @@ void Board::initialize() {
     blackKnights=setBit(blackKnights,57)|setBit(blackKnights,62);
 }   
 
+char pieceToChar(Piece piece)
+{
+    switch (piece)
+    {
+        case WPAWN: return 'P';
+        case WKNIGHT: return 'N';
+        case WBISHOP: return 'B';
+        case WROOK: return 'R';
+        case WQUEEN: return 'Q';
+        case WKING: return 'K';
+        case BPAWN: return 'p';
+        case BKNIGHT: return 'n';
+        case BBISHOP: return 'b';
+        case BROOK: return 'r';
+        case BQUEEN: return 'q';
+        case BKING: return 'k';
+        default: return '.';
+    }
+}
+Piece charToPiece(char c){
+ switch (c)
+ {
+        case 'P': return WPAWN;
+        case  'N': return WKNIGHT;
+        case  'B': return WBISHOP;
+        case  'R': return WROOK;
+        case  'Q': return  WQUEEN;
+        case  'K': return WKING ;
+        case  'p': return BPAWN;
+        case  'n': return BKNIGHT;
+        case  'b': return BBISHOP;
+        case  'r': return BROOK;
+        case  'q': return BQUEEN;
+        case  'k': return BKING;
+        default: return EMPTY;
+ }
+}
+
+
+
 void  Board::printBoard() const{
-Piece piece=EMPTY;
+Piece squares[64];
 
 for(int i=0;i<64;i++){
     if(getBit(whitePawns,i)){
-
-    }
-    else if (getBit(whitePawns,i))
-    {
-        /* code */
+        squares[i]=WPAWN;
     }
     else if (getBit(blackPawns,i))
     {
-        /* code */
+        squares[i]=WPAWN;
     }
     else if (getBit(whiteKing,i))
     {
-        /* code */
+        squares[i]=WKING;
     }
     else if (getBit(blackKing,i))
     {
-        /* code */
+        squares[i]=BKING;
     }
     else if (getBit(whiteQueens,i))
     {
-        /* code */
+         squares[i]=WQUEEN;
     }
     else if (getBit(blackQueens,i))
     {
-        /* code */
+         squares[i]=BQUEEN;
     }
     else if (getBit(blackRooks,i))
     {
-        /* code */
+         squares[i]=BROOK;
     }
     else if (getBit(whiteRooks,i))
     {
-        /* code */
+        squares[i]=WROOK;
     }
     else if (getBit(whiteBishops,i))
     {
-        /* code */
+         squares[i]=WBISHOP;
     }
     else if (getBit(blackBishops,i))
     {
-        /* code */
+         squares[i]=BBISHOP;
     }
     else if (getBit(whiteKnights,i))
     {
-        /* code */
+         squares[i]=WKNIGHT;
     }
     else if (getBit(blackKnights,i))
     {
-        /* code */
+         squares[i]=BKNIGHT;
     }
     else{
-        
+         squares[i]=EMPTY;
     }
 
 }
+for(int i=0; i<64; i++) {
+        std::cout<<pieceToChar(squares[i])<<" ";
+        if((i+1)%8==0)
+        {
+            std::cout<<std::endl;
+        }
+    }
 }
 
 void Board::makeMove(const Move& move) {
