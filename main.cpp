@@ -1,19 +1,15 @@
 #include <iostream>
 #include <cstdint>
 #include <bit>
-
+#include "board.h"
+#include "BitboardUtils.h"
 using namespace std;
 
 int main() {
-uint64_t board = 0;
-
-board |= (1ULL << 2);
-board |= (1ULL << 5);
-board |= (1ULL << 8);
-board |= (1ULL << 13);
-
-uint64_t lsb = board & -board;
-
-cout << board << endl;
-cout << lsb << endl;
+    Board Board;
+    cout << "White: " << popcount(Board.getWhitePieces()) << '\n';
+    cout << "Black: " << popcount(Board.getBlackPieces()) << '\n';
+    cout << "Occupied: " << popcount(Board.getOccupied()) << '\n';
+    cout << "Empty: " << popcount(Board.getEmpty()) << '\n';
+    Board.printBoard();
 }

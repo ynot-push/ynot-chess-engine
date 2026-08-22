@@ -52,7 +52,7 @@ public:
     void initialize();
 
     void printBoard() const;
-
+    void updateOccupancy();
     void makeMove(const Move& move);
 
     Piece getPiece(int square) const;
@@ -85,4 +85,23 @@ public:
     bool canBlackCastleQueenside() const;
 
     int getEnPassantSquare() const;
+    
+    Bitboard getWhitePawns() const;
+    Bitboard getWhiteKnights() const;
+    Bitboard getWhiteBishops() const;
+    Bitboard getWhiteRooks() const;
+    Bitboard getWhiteQueens() const;
+    Bitboard getWhiteKing() const;
+
+    Bitboard getBlackPawns() const;
+    Bitboard getBlackKnights() const;
+    Bitboard getBlackBishops() const;
+    Bitboard getBlackRooks() const;
+    Bitboard getBlackQueens() const;
+    Bitboard getBlackKing() const;
+
+    Bitboard getWhitePieces() const;
+    Bitboard getBlackPieces() const;
+    Bitboard getOccupied() const;
+    Bitboard getEmpty() const;
 };
