@@ -2,10 +2,16 @@
 
 #include "BitboardUtils.h"
 
-class Queen {
-
+class Queen
+{
 public:
-    static Bitboard QueenMask(int square);
-    static Bitboard attacks(int square,Bitboard occupied);
+
+
+static Bitboard QueenMask(int square);
+
+static Bitboard attacks(
+    int square,
+    Bitboard occupied);
+
 
 };

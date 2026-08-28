@@ -1,4 +1,11 @@
 #pragma once
-#include "Board.h"
-#include "Move.h"
-#include <vector>
+
+#include "BitboardUtils.h"
+
+class King {
+
+public:
+
+    static Bitboard attacks(int square);
+
+};
