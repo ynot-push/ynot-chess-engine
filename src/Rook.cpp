@@ -218,3 +218,5 @@ Bitboard Rook::attacks(int square, Bitboard occupied)
 
     return RookAttackTable[square][index];
 }
+
+

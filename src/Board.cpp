@@ -2,6 +2,14 @@
 #include "board.h"
 #include "BitboardUtils.h"
 #include "PieceType.h"
+#include <square.cpp>
+#include <Pawn.cpp>
+#include <Knight.cpp>
+#include <Rook.cpp>
+#include <Queen.cpp>
+#include <King.cpp>
+#include <iostream>
+#include <bitset>
 using namespace BitboardUtils;
 Board::Board(){
     initialize();
@@ -216,6 +224,291 @@ Bitboard Board::getOccupied() const {
 Bitboard Board::getEmpty() const {
     return empty;
 }
+
+void Board::loadFEN(const std::string& fen)
+{
+    // =========================================================
+    // RESET POSITION
+    // =========================================================
+
+    whitePawns   = 0ULL;
+    whiteKnights = 0ULL;
+    whiteBishops = 0ULL;
+    whiteRooks   = 0ULL;
+    whiteQueens  = 0ULL;
+    whiteKing    = 0ULL;
+
+    blackPawns   = 0ULL;
+    blackKnights = 0ULL;
+    blackBishops = 0ULL;
+    blackRooks   = 0ULL;
+    blackQueens  = 0ULL;
+    blackKing    = 0ULL;
+
+    whitePieces = 0ULL;
+    blackPieces = 0ULL;
+    occupied    = 0ULL;
+
+    whiteToMove = false;
+
+    enPassantSquare = -1;
+
+    whiteKingsideCastle  = false;
+    whiteQueensideCastle = false;
+    blackKingsideCastle  = false;
+    blackQueensideCastle = false;
+
+
+    // =========================================================
+    // BOARD
+    // =========================================================
+
+    int rank = 7;
+    int file = 0;
+
+    int fenIndex = 0;
+
+    while (rank >= 0 && fenIndex < fen.length())
+    {
+        char c = fen[fenIndex];
+
+        // End of board section
+        if (c == ' ')
+        {
+            fenIndex++;
+            break;
+        }
+
+        // New rank
+        if (c == '/')
+        {
+            rank--;
+            file = 0;
+            fenIndex++;
+            continue;
+        }
+
+        // Empty squares
+        if (c >= '1' && c <= '8')
+        {
+            file += c - '0';
+            fenIndex++;
+            continue;
+        }
+
+        // Piece
+        int square = rank * 8 + file;
+
+        switch (c)
+        {
+            // White
+            case 'P':
+                whitePawns |= (1ULL << square);
+                break;
+
+            case 'N':
+                whiteKnights |= (1ULL << square);
+                break;
+
+            case 'B':
+                whiteBishops |= (1ULL << square);
+                break;
+
+            case 'R':
+                whiteRooks |= (1ULL << square);
+                break;
+
+            case 'Q':
+                whiteQueens |= (1ULL << square);
+                break;
+
+            case 'K':
+                whiteKing |= (1ULL << square);
+                break;
+
+
+            // Black
+            case 'p':
+                blackPawns |= (1ULL << square);
+                break;
+
+            case 'n':
+                blackKnights |= (1ULL << square);
+                break;
+
+            case 'b':
+                blackBishops |= (1ULL << square);
+                break;
+
+            case 'r':
+                blackRooks |= (1ULL << square);
+                break;
+
+            case 'q':
+                blackQueens |= (1ULL << square);
+                break;
+
+            case 'k':
+                blackKing |= (1ULL << square);
+                break;
+        }
+
+        file++;
+        fenIndex++;
+    }
+
+
+    // =========================================================
+    // SIDE TO MOVE
+    // =========================================================
+
+    whiteToMove = fen[fenIndex] == 'w';
+
+    fenIndex += 2;
+
+
+    // =========================================================
+    // CASTLING RIGHTS
+    // =========================================================
+
+    while (fenIndex < fen.length() && fen[fenIndex] != ' ')
+    {
+        switch (fen[fenIndex])
+        {
+            case 'K':
+                whiteKingsideCastle = true;
+                break;
+
+            case 'Q':
+                whiteQueensideCastle = true;
+                break;
+
+            case 'k':
+                blackKingsideCastle = true;
+                break;
+
+            case 'q':
+                blackQueensideCastle = true;
+                break;
+        }
+
+        fenIndex++;
+    }
+
+    fenIndex++;
+
+
+    // =========================================================
+    // EN PASSANT
+    // =========================================================
+
+    if (fenIndex < fen.length() && fen[fenIndex] != '-')
+    {
+        std::string square;
+
+        square += fen[fenIndex];
+        square += fen[fenIndex + 1];
+
+        enPassantSquare = notationToIndex(square);
+    }
+    else
+    {
+        enPassantSquare = -1;
+    }
+
+
+
+    whitePieces =
+        whitePawns   |
+        whiteKnights |
+        whiteBishops |
+        whiteRooks   |
+        whiteQueens  |
+        whiteKing;
+
+    blackPieces =
+        blackPawns   |
+        blackKnights |
+        blackBishops |
+        blackRooks   |
+        blackQueens  |
+        blackKing;
+
+    occupied = whitePieces | blackPieces;
+}
+bool Board::isSquareAttacked(int square, int side){
+    Bitboard pawns;
+    Bitboard knights;
+    Bitboard bishops;
+    Bitboard rooks;
+    Bitboard queens;
+    Bitboard king; 
+    if(side==WHITE){
+        pawns   = whitePawns;
+        knights = whiteKnights;
+        bishops = whiteBishops;
+        rooks   = whiteRooks;
+        queens  = whiteQueens;
+        king    = whiteKing;
+    }
+    else{
+        pawns = blackPawns;
+        knights = blackKnights;
+        bishops = blackBishops;
+        rooks   = blackRooks;
+        queens  = blackQueens;
+        king    = blackKing;
+    }
+    
+
+if (KnightAttacks[square] &
+    knights){
+        return true;
+    }
+
+if (KingAttacks[square] &
+    king){
+        return true;
+    }    
+if (PawnAttacks[square] &
+    queens){
+        return true;
+    }      
+if (Bishop::attacks(square,occupied) &
+        (bishops | queens))
+        return true;
+
+if (Rook::attacks(square, occupied) & (rooks | queens))
+        return true;
+
+return false;        
+}
+
+Bitboard  Board::generateAllMoves(int side){
+
+
+while (whiteKnights)
+{
+int square=std::getLsb(whiteKnights);
+whiteKnights &= ~whitePieces;
+Bitboard attacks= KnightAttacks[square];
+attacks &= ~whitePieces;
+while (attacks){
+        int target = getLSB(attacks);
+
+        m
+        
+        attacks|=attacks-1;
+
+}
+
+       
+}
+ 
+}
+
+
+
 /*
 void Board::makeMove(const Move& move) {
 
@@ -226,9 +519,7 @@ Piece piece=EMPTY;
 
 }
 
-std::vector<Move> generateAllMoves(){
 
-}
 
 std::vector<Move> generateLegalMoves(){
 
@@ -257,10 +548,6 @@ void Board::setPosition(
     ){
 
     }
-
-void Board::loadFEN(const std::string& fen){
-
-}
 
 bool Board::canWhiteCastleKingside() const{
 

@@ -5,3 +5,6 @@ enum Piece {
     BPAWN, BKNIGHT, BBISHOP, BROOK, BQUEEN, BKING,
     EMPTY
 };
+enum Side{
+    WHITE, BLACK
+};

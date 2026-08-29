@@ -35,3 +35,13 @@ Bitboard Knight::attacks(int square)
    return attacks;
 
 }
+Bitboard KnightAttacks[64];
+
+void initKnightAttacks()
+{
+    for (int square = 0; square < 64; square++)
+    {
+        KnightAttacks[square] =
+            Knight::attacks(square);
+    }
+}

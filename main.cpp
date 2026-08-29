@@ -76,6 +76,8 @@ std::cout << "\nALL ROOK MAGIC TESTS PASSED!\n";
 
 int main()
 {
+    long long example=1ULL<<0;
+    std::cout<<example<<"ggynot hhh";
 testRookMagic();
 
 return 0;

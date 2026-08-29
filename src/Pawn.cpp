@@ -22,3 +22,14 @@ Bitboard Pawn::attacks(int square)
 
    return attacks;
 }
+Bitboard PawnAttacks[64];
+
+void initKnightAttacks()
+{
+    for (int square = 0; square < 64; square++)
+    {
+        PawnAttacks[square] =
+            Pawn::attacks(square);
+    }
+}
+

@@ -7,5 +7,7 @@ class Knight {
 public:
 
     static Bitboard attacks(int square);
+private:    
 
+    static Bitboard KnightAttacks[64];    
 };

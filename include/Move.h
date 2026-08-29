@@ -3,14 +3,11 @@
 struct Move {
     int from;
     int to;
+    Piece piece;
+    Piece captured;
+    int promotion;
+    bool isEnPassant;
+    bool isCastling;
     
-    Piece promotionPiece=EMPTY;
-    
-    Move(int fromSquare, int toSquare,Piece promotion=EMPTY)
-        : from(fromSquare), to(toSquare), promotionPiece(promotion)
-    {
-
-
-    }
 
 };

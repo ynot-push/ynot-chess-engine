@@ -24,3 +24,13 @@ Bitboard King::attacks(int square){
         return attacks;
 
 }
+Bitboard KingAttacks[64];
+
+void initKingAttacks()
+{
+    for (int square = 0; square < 64; square++)
+    {
+        KingAttacks[square] =
+            King::attacks(square);
+    }
+}

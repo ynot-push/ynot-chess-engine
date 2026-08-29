@@ -57,7 +57,7 @@ public:
 
     Piece getPiece(int square) const;
 
-    std::vector<Move> generateAllMoves();
+    Bitboard  generateAllMoves(int side);
 
     std::vector<Move> generateLegalMoves();
 
@@ -104,4 +104,5 @@ public:
     Bitboard getBlackPieces() const;
     Bitboard getOccupied() const;
     Bitboard getEmpty() const;
+    bool isSquareAttacked(int square, int side);
 };

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include "square.h"
 
 int notationToIndex(const std::string& notation){
@@ -19,7 +20,7 @@ int notationToIndex(const std::string& notation){
 
 
     std::string indexToNotation(int index){
-    std::string notation(2, ' '); // Initialize a string of length 2
+    std::string notation = "  "; // Initialize a string of length 2
     if(index < 0 || index > 63) {
         return ""; // Invalid index
     }
