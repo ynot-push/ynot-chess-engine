@@ -485,25 +485,24 @@ return false;
 }
 
 Bitboard  Board::generateAllMoves(int side){
+    std::vector<Move> allMoves;
 
+        while (whiteKnights)
+        {
+            int SourceSquare=std::getLsb(whiteKnights);
+            Bitboard attacks= KnightAttacks[SourceSquare];
+            attacks &= ~whitePieces;
 
-while (whiteKnights)
-{
-int square=std::getLsb(whiteKnights);
-whiteKnights &= ~whitePieces;
-Bitboard attacks= KnightAttacks[square];
-attacks &= ~whitePieces;
-while (attacks){
-        int target = getLSB(attacks);
+            while (attacks){
+                    int TargetSquare=std::getLsb(whiteKnights);
+                    
+                    allMoves.insert(allMoves.end(),SourceSquare.begin(),TargetSquare.end());
+                    attacks|=attacks-1;
 
-        m
-        
-        attacks|=attacks-1;
+            }
 
-}
-
-       
-}
+            
+        }
  
 }
 
