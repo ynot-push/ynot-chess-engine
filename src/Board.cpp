@@ -483,18 +483,132 @@ if (Rook::attacks(square, occupied) & (rooks | queens))
 
 return false;        
 }
-
-Bitboard  Board::generateAllMoves(int side){
+Bitboard generatePieceMoes(Bitboard piece,int side){
+    
+}
+Bitboard Board::generateAllMoves(int side){
+    Bitboard ownPieces;
+    Bitboard enemyPieces;
+    Bitboard ene;
+    Bitboard pawns;
+    Bitboard knights;
+    Bitboard bishops;
+    Bitboard rooks;
+    Bitboard queens;
+    Bitboard king; 
+    if(side==WHITE){
+        ownPieces=whitePieces;
+        enemyPieces=blackPieces;
+        pawns   = whitePawns;
+        knights = whiteKnights;
+        bishops = whiteBishops;
+        rooks   = whiteRooks;
+        queens  = whiteQueens;
+        king    = whiteKing;
+    }
+    else{
+        ownPieces=blackPieces;
+        enemyPieces=whitePieces;
+        pawns = blackPawns;
+        knights = blackKnights;
+        bishops = blackBishops;
+        rooks   = blackRooks;
+        queens  = blackQueens;
+        king    = blackKing;
+    }
     std::vector<Move> allMoves;
 
-        while (whiteKnights)
+        while (knights)
         {
-            int SourceSquare=std::getLsb(whiteKnights);
+            int SourceSquare=std::getLSB(knights);
             Bitboard attacks= KnightAttacks[SourceSquare];
-            attacks &= ~whitePieces;
-
+            attacks &= ~ownPieces;
+            knights|=knights-1; 
             while (attacks){
-                    int TargetSquare=std::getLsb(whiteKnights);
+                    int TargetSquare=std::getLSB(knights);
+                    
+                    allMoves.insert(allMoves.end(),SourceSquare.begin(),TargetSquare.end());
+                    attacks|=attacks-1;
+
+            }
+
+            
+        }
+
+
+
+        while (bishops)
+        {
+            int SourceSquare=std::getLSB(bishops);
+            Bitboard attacks=Bishop::attacks(SourceSquare,occupied);
+            attacks &= ~ownPieces;
+            bishops|=bishops-1; 
+            while (attacks){
+                    int TargetSquare=std::getLSB(bishops);
+                    
+                    allMoves.insert(allMoves.end(),SourceSquare.begin(),TargetSquare.end());
+                    attacks|=attacks-1;
+
+            }
+
+            
+        }
+                while (rooks)
+        {
+            int SourceSquare=std::getLSB(rooks);
+            Bitboard attacks=Rook::attacks(SourceSquare,occupied);
+            attacks &= ~ownPieces;
+            rooks|=rooks-1; 
+            while (attacks){
+                    int TargetSquare=std::getLSB(rooks);
+                    
+                    allMoves.insert(allMoves.end(),SourceSquare.begin(),TargetSquare.end());
+                    attacks|=attacks-1;
+
+            }
+
+            
+        }
+                while (queens)
+        {
+            int SourceSquare=std::getLSB(queens);
+            Bitboard attacks=Queen::attacks(SourceSquare,occupied);
+            attacks &= ~ownPieces;
+            queens|=queens-1; 
+            while (attacks){
+                    int TargetSquare=std::getLSB(queens);
+                    
+                    allMoves.insert(allMoves.end(),SourceSquare.begin(),TargetSquare.end());
+                    attacks|=attacks-1;
+
+            }
+
+            
+        }
+                while (pawns)
+        {
+            int SourceSquare=std::getLSB(pawns);
+            Bitboard attacks= PawnAttacks[SourceSquare];
+            attacks &= ~ownPieces;
+            pawns|=pawns-1; 
+            while (attacks){
+                    int TargetSquare=std::getLSB(pawns);
+                    
+                    allMoves.insert(allMoves.end(),SourceSquare.begin(),TargetSquare.end());
+                    attacks|=attacks-1;
+
+            }
+
+            
+        }
+                while (king)
+        {
+            int SourceSquare=std::getLSB(king);
+            Bitboard attacks= KingAttacks[SourceSquare];
+            attacks &= ~ownPieces;
+            king|=king-1; 
+            while (attacks){
+                    int TargetSquare=std::getLSB(king);
                     
                     allMoves.insert(allMoves.end(),SourceSquare.begin(),TargetSquare.end());
                     attacks|=attacks-1;
@@ -508,11 +622,12 @@ Bitboard  Board::generateAllMoves(int side){
 
 
 
-/*
+
 void Board::makeMove(const Move& move) {
 
-}
 
+}
+/*
 Piece Board::getPiece(int square) const{
 Piece piece=EMPTY; 
 
