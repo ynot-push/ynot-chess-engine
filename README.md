@@ -20,18 +20,21 @@ From the project root:
 
 ```powershell
 .\build.ps1
+```
 
-## test
+## Test
 
-for perft tests
+For perft tests:
 
 ```powershell
 .\bin\perft_tests.exe
+```
 
-for search performance test 
+For search performance test:
 
 ```powershell
 .\bin\search_test.exe
+```
 
 ## Branches
 
@@ -42,5 +45,3 @@ Bitboard-based implementation focused on efficient board representation and move
 ### array-engine
 
 Array-based implementation maintained as a separate engine implementation for comparison and experimentation.
-
-
