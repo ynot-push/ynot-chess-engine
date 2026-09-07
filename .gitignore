@@ -1,5 +1,6 @@
 build/
 bin/
+__pycache__/
 *.o
 *.obj
 *.exe
@@ -7,6 +8,6 @@ bin/
 .venv/
 .vscode/
 .bin
-.pth
-.pt
-.zip
+*.pth
+*.pt
+*.zip
