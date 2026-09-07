@@ -1,5 +1,5 @@
 #include <iostream>
-#include "board.h"
+#include "Board.h"
 #include "Pawn.h"
 #include "Knight.h"
 #include "King.h"
@@ -191,7 +191,10 @@ bool  Board::canBlackCastleQueenside() const{
     }
 int Board ::getEnPassantSquare() const{
    return enPassantSquare;
-}    
+}
+bool Board::whiteToMove() const{
+    return WhiteToMove;
+}
 std::vector<Move> Board::generateAllMoves(){
     std::vector<Move> allMoves;
     for(int i=0;i<64;i++){

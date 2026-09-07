@@ -28,6 +28,7 @@ public:
     int getEnPassantSquare()const;
     bool isSquareAttacked(int square, bool byWhite) const;
     bool isInCheck(bool white) const;
+    bool whiteToMove() const;
     std::vector<Move> generateLegalMoves();
     long long perft(int depth);
   void setPosition(
@@ -42,4 +43,3 @@ public:
     void loadFEN(const std::string& fen);
     void divide(int depth);
 };
-
