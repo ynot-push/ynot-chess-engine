@@ -1,222 +1,85 @@
 #include "Rook.h"
 
-#include <cstdint>
-#include <random>
-#include <cstring>
-
-Bitboard findRookMagic(int square, int relevantBits);
-Bitboard randomSparse64();
-
 Bitboard Rook::RookAttackTable[64][4096];
 Bitboard Rook::RookMagics[64];
 int Rook::RookRelevantBits[64];
 
-Bitboard randomSparse64()
+Bitboard Rook::RookMask(int square)
 {
-    static std::mt19937_64 rng(std::random_device{}());
+    const int rank = square / 8;
+    const int file = square % 8;
+    Bitboard mask = 0ULL;
 
-    return rng() & rng() & rng();
-}
-
-Bitboard Rook::RookMask(int square){
-    int rank=square/8;
-    int file=square%8;
-    Bitboard mask=0;
-    for(int i=rank+1;i<=6;i++){
-        mask |=1ull<<(i*8+file);
-    }
-    for(int i=1;i<rank;i++){
-         mask |=1ull<<(i*8+file);
-    }
-     for(int i=file+1;i<=6;i++){
-         mask |=1ull<<(rank*8+i);
-    }
-     for(int i=1;i<file;i++){
-         mask |=1ull<<(rank*8+i);
-    }
-
-
+    for (int r = rank + 1; r <= 6; r++) mask |= 1ULL << (r * 8 + file);
+    for (int r = 1; r < rank; r++)      mask |= 1ULL << (r * 8 + file);
+    for (int f = file + 1; f <= 6; f++) mask |= 1ULL << (rank * 8 + f);
+    for (int f = 1; f < file; f++)      mask |= 1ULL << (rank * 8 + f);
 
     return mask;
 }
-Bitboard Rook::setOccupancy(int index, int bitsInMask, Bitboard attackMask){
-    Bitboard Occupancy=0;
-    for(int count = 0; count < bitsInMask; count++){
-        int sqaure=__builtin_ctzll(attackMask);
-        attackMask &=attackMask-1;
-        if(index&(1<<count)){
-            Occupancy|=1ULL<<sqaure;
-        }
+
+Bitboard Rook::attacksSlow(int square, Bitboard occupied)
+{
+    const int rank = square / 8;
+    const int file = square % 8;
+    Bitboard attacks = 0ULL;
+
+    for (int r = rank + 1; r <= 7; r++)
+    {
+        attacks |= 1ULL << (r * 8 + file);
+        if (occupied & (1ULL << (r * 8 + file))) break;
     }
-    return Occupancy;
+    for (int r = rank - 1; r >= 0; r--)
+    {
+        attacks |= 1ULL << (r * 8 + file);
+        if (occupied & (1ULL << (r * 8 + file))) break;
+    }
+    for (int f = file + 1; f <= 7; f++)
+    {
+        attacks |= 1ULL << (rank * 8 + f);
+        if (occupied & (1ULL << (rank * 8 + f))) break;
+    }
+    for (int f = file - 1; f >= 0; f--)
+    {
+        attacks |= 1ULL << (rank * 8 + f);
+        if (occupied & (1ULL << (rank * 8 + f))) break;
+    }
+
+    return attacks;
 }
 
 void Rook::initRookAttacks()
 {
     for (int square = 0; square < 64; square++)
     {
-        Bitboard mask = RookMask(square);
-
-        int relevantBits = __builtin_popcountll(mask);
+        const Bitboard mask = RookMask(square);
+        const int relevantBits = BitboardUtils::popcount(mask);
 
         RookRelevantBits[square] = relevantBits;
+        RookMagics[square] = BitboardUtils::findMagic(square, relevantBits, mask, attacksSlow);
 
-        // Find magic number for this square
-        RookMagics[square] =
-            findRookMagic(square, relevantBits);
+        const int possibleOccupancies = 1 << relevantBits;
 
-        int possibleOccupancies = 1 << relevantBits;
-
-        for (int index = 0;
-             index < possibleOccupancies;
-             index++)
+        for (int index = 0; index < possibleOccupancies; index++)
         {
-            Bitboard occupancy =
-                setOccupancy(index, relevantBits, mask);
+            const Bitboard occupancy = BitboardUtils::setOccupancy(index, relevantBits, mask);
+            const Bitboard attack = attacksSlow(square, occupancy);
 
-            Bitboard attack =
-                attacksSlow(square, occupancy);
+            const int magicIndex =
+                static_cast<int>((occupancy * RookMagics[square]) >> (64 - relevantBits));
 
-            int magicIndex =
-                (occupancy * RookMagics[square])
-                >> (64 - relevantBits);
-
-            RookAttackTable[square][magicIndex] =
-                attack;
+            RookAttackTable[square][magicIndex] = attack;
         }
     }
-}
-
-Bitboard findRookMagic(int square, int relevantBits)
-{
-    Bitboard mask = Rook::RookMask(square);
-
-    int numOccupancies = 1 << relevantBits;
-
-    Bitboard occupancies[4096];
-    Bitboard attacks[4096];
-
-    // Generate every possible occupancy
-    for (int index = 0; index < numOccupancies; index++)
-    {
-        occupancies[index] =
-            Rook::setOccupancy(index, relevantBits, mask);
-
-        attacks[index] =
-            Rook::attacksSlow(square, occupancies[index]);
-    }
-
-    // Search for magic number
-    while (true)
-    {
-        Bitboard magic = randomSparse64();
-
-        // Quick rejection test
-        if (__builtin_popcountll(
-                (mask * magic) & 0xFF00000000000000ULL) < 6)
-        {
-            continue;
-        }
-
-        Bitboard used[4096];
-
-        for (int i = 0; i < 4096; i++)
-            used[i] = 0xFFFFFFFFFFFFFFFFULL;
-
-        bool fail = false;
-
-        for (int i = 0; i < numOccupancies; i++)
-        {
-            int index =
-                (occupancies[i] * magic)
-                >> (64 - relevantBits);
-
-            if (used[index] == 0xFFFFFFFFFFFFFFFFULL)
-            {
-                used[index] = attacks[i];
-            }
-            else if (used[index] != attacks[i])
-            {
-                fail = true;
-                break;
-            }
-        }
-
-        if (!fail)
-            return magic;
-    }
-}
-
-
-Bitboard Rook::attacksSlow(int square,Bitboard occupied)
-{
-    int rank=square/8;
-    int file=square%8;
-    Bitboard attacks=0;
-    int i=1;
-
-    while(true){
-        rank+=i;
-        if(rank>7){
-            break;
-        }
-        attacks|=1ULL<<rank*8+file;
-        if(1ULL<<rank*8+file & occupied){
-            break;
-        }
-    }
-    rank=square/8;
-    file=square%8;
-     while(true){
-        rank-=i;
-        if(rank<0){
-            break;
-        }
-        attacks|=1ULL<<rank*8+file;
-        if(1ULL<<rank*8+file & occupied){
-            break;
-        }
-        
-    }
-    rank=square/8;
-    file=square%8;
-     while(true){
-        file+=i;
-        if(file>7){
-            break;
-        }
-        attacks|=1ULL<<rank*8+file;
-        if(1ULL<<rank*8+file & occupied){
-            break;
-        }
-    }
-    rank=square/8;
-    file=square%8;
-     while(true){
-        file-=i;
-        if( file<0){
-            break;
-        }
-        attacks|=1ULL<<rank*8+file;
-        if(1ULL<<rank*8+file & occupied){
-            break;
-        }
-        
-    }
-    return attacks;
 }
 
 Bitboard Rook::attacks(int square, Bitboard occupied)
 {
-    Bitboard mask = RookMask(square);
-
+    const Bitboard mask = RookMask(square);
     occupied &= mask;
 
-    int index =
-        (occupied * RookMagics[square])
-        >> (64 - RookRelevantBits[square]);
+    const int index =
+        static_cast<int>((occupied * RookMagics[square]) >> (64 - RookRelevantBits[square]));
 
     return RookAttackTable[square][index];
 }
-
-

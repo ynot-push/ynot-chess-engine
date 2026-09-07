@@ -2,12 +2,17 @@
 
 #include "BitboardUtils.h"
 
-class Knight {
-
+class Knight
+{
 public:
 
-    static Bitboard attacks(int square);
-private:    
+    static Bitboard attacksSlow(int square);
 
-    static Bitboard KnightAttacks[64];    
+    static void initKnightAttacks();
+
+    static Bitboard attacks(int square);
+
+private:
+
+    static Bitboard KnightAttackTable[64];
 };

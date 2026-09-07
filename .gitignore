@@ -1,7 +1,12 @@
 build/
 bin/
+/.vscode
+/.venv
 *.o
 *.obj
 *.exe
 *.out
-.vscode/
+*.bin
+*.pt
+*.pth
+__pycache__/

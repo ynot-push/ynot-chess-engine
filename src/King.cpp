@@ -1,36 +1,33 @@
-#include <King.h>
-Bitboard King::attacks(int square){
-    Bitboard attacks=0;
-    int rank=square/8;
-    int file=square%8;
-    if (rank + 1 < 8 && file + 1 < 8)
-    attacks |= 1ULL<<((1+rank)*8+(file+1));
-    if (rank -1 >= 0 && file + 1 < 8)
-    attacks |= 1ULL<<((-1+rank)*8+(file+1));
-    if (rank + 1 < 8 && file - 1 >= 0)
-    attacks |= 1ULL<<((1+rank)*8+(file-1));
-    if (rank -1 >= 0 && file - 1 >= 0)
-    attacks |= 1ULL<<((-1+rank)*8+(file-1));
+#include "King.h"
 
-    if (rank + 1 < 8)
-        attacks |= 1ULL << ((rank+1)*8 + file);
-    if (rank - 1 >= 0)
-        attacks |= 1ULL << ((rank-1)*8 + file);
-    if (file + 1 < 8)
-        attacks |= 1ULL << (rank*8 + (file+1));
-    if (file - 1 >= 0)
-        attacks |= 1ULL << (rank*8 + (file-1));
-     
-        return attacks;
+Bitboard King::KingAttackTable[64];
 
+Bitboard King::attacksSlow(int square)
+{
+    Bitboard attacks = 0ULL;
+    const int rank = square / 8;
+    const int file = square % 8;
+
+    if (rank + 1 < 8 && file + 1 < 8) attacks |= 1ULL << ((rank + 1) * 8 + (file + 1));
+    if (rank - 1 >= 0 && file + 1 < 8) attacks |= 1ULL << ((rank - 1) * 8 + (file + 1));
+    if (rank + 1 < 8 && file - 1 >= 0) attacks |= 1ULL << ((rank + 1) * 8 + (file - 1));
+    if (rank - 1 >= 0 && file - 1 >= 0) attacks |= 1ULL << ((rank - 1) * 8 + (file - 1));
+
+    if (rank + 1 < 8) attacks |= 1ULL << ((rank + 1) * 8 + file);
+    if (rank - 1 >= 0) attacks |= 1ULL << ((rank - 1) * 8 + file);
+    if (file + 1 < 8) attacks |= 1ULL << (rank * 8 + (file + 1));
+    if (file - 1 >= 0) attacks |= 1ULL << (rank * 8 + (file - 1));
+
+    return attacks;
 }
-Bitboard KingAttacks[64];
 
-void initKingAttacks()
+void King::initKingAttacks()
 {
     for (int square = 0; square < 64; square++)
-    {
-        KingAttacks[square] =
-            King::attacks(square);
-    }
+        KingAttackTable[square] = attacksSlow(square);
+}
+
+Bitboard King::attacks(int square)
+{
+    return KingAttackTable[square];
 }
