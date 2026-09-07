@@ -4,4 +4,9 @@ bin/
 *.obj
 *.exe
 *.out
+.venv/
 .vscode/
+.bin
+.pth
+.pt
+.zip
