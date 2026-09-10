@@ -45,3 +45,15 @@ Bitboard-based implementation focused on efficient board representation and move
 ### array-engine
 
 Array-based implementation maintained as a separate engine implementation for comparison and experimentation.
+
+## Features
+
+- **Two interchangeable board representations** — `bitboard` (magic-bitboard move generation) and `array-engine` (array-based board), kept as separate branches for direct performance comparison
+- **Alpha-beta negamax search**, including:
+  - Principal Variation Search (PVS) / NegaScout
+  - Aspiration windows
+  - Late Move Reductions (LMR)
+  - Quiescence search with delta pruning
+  - Static Exchange Evaluation (SEE) for move ordering and pruning
+- **NNUE evaluation** with incrementally-updated accumulators
+- **UCI protocol support**, usable with standard chess GUIs
