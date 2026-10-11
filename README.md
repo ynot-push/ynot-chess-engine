@@ -20,36 +20,7 @@ This repository is currently set up for the `bitboard` implementation. The build
 
 If you are on a Unix-like system, the scripts are Windows-specific and may need to be adapted, but the core compilation path is still `g++` with `-std=c++20`.
 
-## Repository structure
 
-```text
-.
-├── README.md
-├── build.ps1
-├── main.cpp
-├── include/
-│   ├── Board.h
-│   ├── NNUE.h
-│   └── ...
-├── src/
-│   ├── Board.cpp
-│   ├── NNUE.cpp
-│   ├── Pawn.cpp
-│   ├── Rook.cpp
-│   ├── Bishop.cpp
-│   ├── Knight.cpp
-│   ├── Queen.cpp
-│   ├── King.cpp
-│   ├── square.cpp
-│   └── ...
-├── tests/
-│   ├── PerftTests.cpp
-│   ├── SearchTest.cpp
-│   └── UCI.cpp
-├── tools/
-│   └── nnue.bin
-└── bin/
-```
 
 ## Build
 
