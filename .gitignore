@@ -6,7 +6,11 @@ bin/
 *.obj
 *.exe
 *.out
-*.bin
+
 *.pt
 *.pth
 __pycache__/
+.gitignore
+/.venv
+/__pycache__
+/node_modules
