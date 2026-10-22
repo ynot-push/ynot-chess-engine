@@ -1,0 +1,636 @@
+:root {
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+
+    --bg: #f4f2ec;
+    --card: #fff;
+    --tx: #1d1c19;
+    --mu: #6d6b63;
+    --bd: #e1ddd0;
+    --lt: #eeeed2;
+    --dk: #739552;
+    --hl: #f6e05e99;
+    --ac: #1f6f4a;
+    --ac2: #e8b100;
+    --bad: #c0392b;
+    --hero: linear-gradient(
+        160deg,
+        #10251b 0%,
+        #1d4a35 60%,
+        #2b6a4a 100%
+    );
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        color-scheme: dark;
+        --bg: #151513;
+        --card: #222220;
+        --tx: #eceae3;
+        --mu: #9d9b92;
+        --bd: #383835;
+        --lt: #b9b79a;
+        --dk: #5a7547;
+        --ac: #4fc18a;
+    }
+}
+
+:root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #151513;
+    --card: #222220;
+    --tx: #eceae3;
+    --mu: #9d9b92;
+    --bd: #383835;
+    --lt: #b9b79a;
+    --dk: #5a7547;
+    --ac: #4fc18a;
+}
+
+/* ===== Base ===== */
+
+html {
+    scroll-padding-top: env(safe-area-inset-top, 0px);
+    scroll-behavior: smooth;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--tx);
+    font: 15px/1.5 "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.wrap {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--bd);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 14px;
+}
+
+h2 {
+    margin: 0 0 10px;
+    font-size: 20px;
+}
+
+label {
+    display: block;
+    font-size: 13px;
+    color: var(--mu);
+    margin: 10px 0 4px;
+}
+
+/* ===== Inputs and buttons ===== */
+
+select,
+input,
+textarea,
+button {
+    font: inherit;
+    color: var(--tx);
+    background: var(--bg);
+    border: 1px solid var(--bd);
+    border-radius: 10px;
+    padding: 9px 11px;
+}
+
+textarea {
+    width: 100%;
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 12.5px;
+}
+
+button {
+    cursor: pointer;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.pre {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.pre button {
+    text-align: left;
+    padding: 10px;
+}
+
+.pre button b {
+    display: block;
+}
+
+.pre button span {
+    font-size: 12px;
+    color: var(--mu);
+}
+
+.pre button.on,
+.seg button.on {
+    border-color: var(--ac);
+    box-shadow: 0 0 0 2px var(--ac);
+    background: var(--card);
+}
+
+.row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.row > div {
+    flex: 1;
+    min-width: 110px;
+}
+
+.row input,
+.row select {
+    width: 100%;
+}
+
+.seg {
+    display: flex;
+    gap: 8px;
+}
+
+.seg button {
+    flex: 1;
+}
+
+.go {
+    background: var(--ac);
+    color: #fff;
+    border-color: var(--ac);
+    font-weight: 700;
+    padding: 12px 22px;
+    margin-top: 14px;
+}
+
+.mu {
+    color: var(--mu);
+    font-size: 13px;
+}
+
+.setup {
+    max-width: 560px;
+    margin: 0 auto 30px;
+}
+
+/* ===== Header ===== */
+
+.top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 26px 0 16px;
+}
+
+.top .logo {
+    font-size: 44px;
+    line-height: 1;
+}
+
+.top h1 {
+    margin: 0;
+    font-size: 24px;
+    letter-spacing: -0.01em;
+}
+
+.top p {
+    margin: 2px 0 0;
+    color: var(--mu);
+    font-size: 14px;
+}
+
+/* ===== Game layout ===== */
+
+/*
+   The board column is 450px maximum.
+   The sidebar uses the remaining available width.
+*/
+
+.game {
+    display: grid;
+    grid-template-columns: minmax(0, 450px) minmax(0, 1fr);
+    align-items: start;
+    justify-content: center;
+    gap: 20px;
+    padding-top: 16px;
+}
+
+.board-column {
+    width: 100%;
+    max-width: 450px;
+    min-width: 0;
+}
+
+.board-frame {
+    display: block;
+    width: 100%;
+    max-width: 450px;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.game-sidebar {
+    width: 100%;
+    min-width: 0;
+}
+
+/* ===== Chessboard ===== */
+
+/*
+   The board fills its column.
+   Board.jsx must also allow its inner squares to resize.
+*/
+
+.board-frame .board,
+.board-column .board,
+.board {
+    display: flex;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.sq {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    min-width: 0;
+    min-height: 0;
+
+    font-size: min(7.6vw, 46px);
+    line-height: 1;
+    user-select: none;
+    cursor: pointer;
+}
+
+.sq.l {
+    background: var(--lt);
+}
+
+.sq.d {
+    background: var(--dk);
+}
+
+.sq.last {
+    box-shadow: inset 0 0 0 100px var(--hl);
+}
+
+.sq.sel {
+    box-shadow: inset 0 0 0 4px var(--ac2);
+}
+
+.sq.tg::after {
+    content: "";
+    width: 28%;
+    height: 28%;
+    border-radius: 50%;
+    background: #0003;
+    position: absolute;
+}
+
+.pw {
+    color: #fff;
+    text-shadow:
+        0 0 2px #000,
+        0 0 2px #000,
+        0 0 1px #000;
+}
+
+.pb {
+    color: #111;
+    text-shadow: 0 0 1px #fff8;
+}
+
+/* ===== Chess.com-style clocks ===== */
+
+.board-clock {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    width: 100%;
+    min-height: 58px;
+    margin: 8px 0;
+    padding: 9px 14px;
+
+    color: var(--tx);
+    background: var(--card);
+    border: 1px solid var(--bd);
+    border-radius: 10px;
+
+    transition:
+        background 160ms ease,
+        border-color 160ms ease;
+}
+
+.clock-player {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    font-weight: 600;
+}
+
+.clock-avatar {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+
+    width: 34px;
+    height: 34px;
+
+    border-radius: 8px;
+    background: var(--bg);
+    font-size: 15px;
+}
+
+.clock-player > span:not(.clock-dot) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.clock-dot {
+    width: 7px;
+    height: 7px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #419b66;
+}
+
+.clock-time {
+    min-width: 90px;
+    padding: 5px 9px;
+
+    border-radius: 7px;
+    background: var(--bg);
+
+    text-align: center;
+    font-size: 26px;
+    font-weight: 750;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.5px;
+}
+
+/* Active player's clock */
+
+.board-clock.active {
+    border-color: var(--ac);
+    box-shadow: 0 0 0 1px var(--ac);
+}
+
+.board-clock.active .clock-time {
+    color: #fff;
+    background: var(--ac);
+}
+
+/* Low time warning */
+
+.board-clock.low .clock-time {
+    color: var(--bad);
+}
+
+.board-clock.low.active .clock-time {
+    color: #fff;
+    background: var(--bad);
+}
+
+/* Retain compatibility with the old clock class if used elsewhere */
+
+.clock {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 14px;
+    margin-bottom: 8px;
+
+    border-radius: 10px;
+    background: var(--card);
+    border: 1px solid var(--bd);
+
+    font-variant-numeric: tabular-nums;
+}
+
+.clock b {
+    font-size: 26px;
+}
+
+.clock.on {
+    border-color: var(--ac);
+    box-shadow: 0 0 0 2px var(--ac);
+}
+
+.clock.low b {
+    color: var(--bad);
+}
+
+/* ===== Move list ===== */
+
+.moves {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) minmax(0, 1fr);
+    gap: 2px 6px;
+    align-content: start;
+
+    max-height: 230px;
+    overflow: auto;
+
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 13px;
+}
+
+.moves .n {
+    color: var(--mu);
+}
+
+.stat {
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+/* ===== Analysis and accuracy ===== */
+
+.acc {
+    display: flex;
+    gap: 10px;
+    margin: 12px 0;
+}
+
+.acc > div {
+    flex: 1;
+    text-align: center;
+    padding: 14px;
+    border-radius: 12px;
+    background: var(--bg);
+    border: 1px solid var(--bd);
+}
+
+.acc b {
+    display: block;
+    font-size: 34px;
+    color: var(--ac);
+}
+
+.tw {
+    overflow: auto;
+    max-height: 300px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 13px;
+}
+
+td,
+th {
+    padding: 5px 8px;
+    text-align: left;
+    border-bottom: 1px solid var(--bd);
+}
+
+.c-b {
+    color: var(--bad);
+    font-weight: 600;
+}
+
+.c-m {
+    color: #d98200;
+}
+
+.c-i {
+    color: #a38a00;
+}
+
+/* ===== Analysis progress ===== */
+
+.analysis-progress {
+    width: 100%;
+    margin: 14px 0;
+}
+
+.analysis-progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 7px;
+    font-size: 13px;
+    color: var(--mu);
+}
+
+.analysis-progress-track {
+    width: 100%;
+    height: 10px;
+    overflow: hidden;
+    background: var(--bd);
+    border-radius: 999px;
+}
+
+.analysis-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: #22a365;
+    border-radius: inherit;
+    transition: width 180ms ease;
+}
+
+.analysis-progress-fill.done {
+    background: #16834d;
+}
+
+.analysis-progress-status {
+    margin-top: 6px;
+    color: var(--mu);
+    font-size: 12px;
+}
+
+/* ===== Responsive layout ===== */
+
+@media (max-width: 800px) {
+    .game {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .board-column,
+    .game-sidebar {
+        width: 100%;
+        max-width: 450px;
+    }
+}
+
+@media (max-width: 560px) {
+    .pre {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .board-clock {
+        min-height: 52px;
+        padding: 7px 10px;
+    }
+
+    .clock-time {
+        min-width: 78px;
+        font-size: 22px;
+    }
+
+    .sq {
+        font-size: min(9vw, 42px);
+    }
+
+    .top {
+        gap: 10px;
+        padding-top: 20px;
+    }
+
+    .top .logo {
+        font-size: 36px;
+    }
+
+    .top h1 {
+        font-size: 21px;
+    }
+
+    .acc {
+        gap: 6px;
+    }
+
+    .acc > div {
+        padding: 10px 6px;
+    }
+
+    .acc b {
+        font-size: 28px;
+    }
+}
