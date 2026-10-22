@@ -77,7 +77,6 @@ The source expects the following known-correct values:
 const long long expected[] = { 1, 20, 400, 8902, 197281, 4865609 };
 ```
 
-This is a standard and widely accepted perft validation set for the initial chess position.
 
 ### 3) Search benchmark
 
@@ -126,7 +125,6 @@ The browser app is not meant to run the native C++ engine directly in the browse
 - Python backend exposes the API
 - backend calls the engine or wraps it through UCI / a command proxy
 
-This is the correct approach for a web demo.
 
 ### Windows (PowerShell)
 
@@ -211,17 +209,6 @@ Bitboard-based implementation focused on efficient board representation and move
 
 Array-based implementation maintained as a separate engine for comparison and experimentation.
 
-## Intended validation protocol
-
-Because this project is a chess engine, the most rigorous validation path is:
-
-1. Compile with `build.ps1`
-2. Run perft validation at standard depths
-3. Run the search benchmark for timing and node throughput
-4. Use `chess_bot.exe` in UCI mode against a GUI or tournament harness
-5. Run the web/demo flow separately through the backend and frontend
-
-That sequence checks correctness first, then performance, then protocol compatibility, and finally the browser experience.
 
 ## Disclaimer
 
